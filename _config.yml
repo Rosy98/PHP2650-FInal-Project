@@ -3,9 +3,8 @@ title: Convolutional Neural Network for Chest X-rays classification and predicti
 SEOTitle: Yu Yan/ Zihan Zhou
 header-img: img/post-bg-desk.jpg
 email: yu_yan@brown.edu/ zihan_zhou1@brown.edu
-description: "写一句你想写的话"
-keyword: "我的博客"
 url: "https://github.com/Rosy98/PHP2650-Final-Project.git" 
+github_repo: "https://github.com/Rosy98/PHP2650-Final-Project.git" 
 
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
