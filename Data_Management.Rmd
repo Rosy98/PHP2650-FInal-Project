@@ -1,0 +1,105 @@
+---
+title: "Data_Management"
+author: "Yu Yan"
+date: "2023-05-12"
+output: pdf_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+knitr::opts_chunk$set(message = F)
+knitr::opts_chunk$set(warning = F)
+library(kableExtra)
+library(stats)
+library(tableone)
+library(lubridate)
+library(knitr)
+library(tidyverse)
+library(randomForest) # random forests
+library(gbm) # gradient boosting
+library(pROC) # AUC curve
+library(caret) # Test train split and accuracy
+library(rpart.plot) # Visualization of Regression Tree 
+library(OOBCurve)
+library(tensorflow)
+library(keras)
+#library(imager)
+library(magick)
+```
+
+
+The data was downloaded in this website:
+https://www.kaggle.com/code/faressayah/chest-x-ray-medical-diagnosis-with-cnn-densenet/input?select=Data
+
+We've only uploaded a porportion of the images into the Repository due to its file size limitations. 
+
+The followings are code that we implemented to extract and manage the data used in this project:
+
+After download it from the website
+
+# Check data Dimentionality 
+```{r}
+train_covid_list = list.files('Data/train/COVID19/')
+train_normal_list = list.files('Data/train/Normal/')
+train_pneu_list = list.files('Data/train/PNEUMONIA/')
+
+test_covid_list = list.files('Data/test/COVID19/')
+test_normal_list = list.files('Data/test/Normal/')
+test_pneu_list = list.files('Data/test/PNEUMONIA/')
+
+
+# Move some images from both folders to create a validation folder.
+# While also keep the same proportion of COVID19 - NORMAL - PNEUMONIA
+total_train = length(train_covid_list) + length(train_normal_list) + length(train_pneu_list)
+prop_train = c(length(train_covid_list)/total_train, length(train_normal_list)/total_train, length(train_pneu_list)/total_train)
+
+prop_train
+
+total_test= length(test_covid_list) + length(test_normal_list) + length(test_pneu_list)
+prop_test = c(length(test_covid_list)/total_test, length(test_normal_list)/total_test, length(test_pneu_list)/total_test)
+
+prop_test
+
+# We can see that the proportion of three classes are approximatedly 9% covid-19, 25% Normal and 66% PNEUMONIA,
+# And they are the checked for both trian and test data.
+
+# Next we want to have a validation dataset to evalute the model other than train and test data
+# originally, train,test is 80/20, so move 10% from train as validate, and their final proportion would be 70,20,10
+total_train / (total_train+total_test)
+
+
+# Calculate number of images moving from train sets to validation sets while keeping the proportion of each category the same as to train and test sets.
+num_validate = round(prop_train * round(0.1 * (total_test+total_train)))
+```
+
+
+```{r eval=F}
+# Move the first n files from train to validate by creating a sub folder of validation in your dataset folder in advance
+
+file.rename( paste0("Data/train/COVID19/", train_covid_list[1:num_validate[1]]),
+          paste0("Data/validate/COVID19/", train_covid_list[1:num_validate[1]]) )
+
+file.rename( paste0("Data/train/NORMAL/", train_normal_list[1:num_validate[2]]),
+          paste0("Data/validate/NORMAL/", train_normal_list[1:num_validate[2]]) )
+
+file.rename( paste0("Data/train/PNEUMONIA/", train_pneu_list[1:num_validate[3]]),
+          paste0("Data/validate/PNEUMONIA/", train_pneu_list[1:num_validate[3]]) )
+
+```
+
+
+```{r}
+# Validate list
+validate_covid_list = list.files('Data/validate/COVID19/')
+validate_normal_list = list.files('Data/validate/Normal/')
+validate_pneu_list = list.files('Data/validate/PNEUMONIA/')
+
+total_valid = length(validate_covid_list) + length(validate_normal_list) + length(validate_pneu_list)
+valid_list = c(validate_covid_list, validate_normal_list,validate_pneu_list)
+
+prop_valid = c(length(validate_covid_list)/total_valid, length(validate_normal_list)/total_valid, length(validate_pneu_list)/total_valid)
+prop_valid 
+```
+
+we have checked the proportion is the same in validation set. 
