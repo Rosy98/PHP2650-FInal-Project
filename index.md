@@ -1,9 +1,11 @@
 ---
-title: "PHP2650 Final Project"
+title: " Convolutional Neural Network for Chest X-rays classification and prediction"
+subtitle: "PHP2650 Final Project"
 author: "Yu Yan, Zihan Zhou"
 output:
-  html_document: 
+  html_document:
     theme: cerulean
+  pdf_document: default
 link-citations: yes
 editor_options:
   markdown:
@@ -15,12 +17,17 @@ bibliography: refs.bib
 <style type="text/css">
 
 h1.title {
-  font-size: 45px;
+  font-size: 40px;
   color: Black;
   text-align: center;
 }
+h3.subtitle {
+  font-size: 30px;
+  color: Grey;
+  text-align: center;
+}
 h4.author { /* Header 4 - and the author and data headers use this too  */
-    font-size: 20px;
+  font-size: 20px;
   font-family: "Times New Roman", Times, serif;
   color: Grey;
   text-align: center;
@@ -30,7 +37,7 @@ figure{text-align: center; max-width: 40%; margin:0;padding: 10px;}
 figure img{width: 100%;}
 body{
   font-family: Helvetica;
-  font-size: 15pt;
+  font-size: 14pt;
 }
 </style>
 ```
@@ -40,7 +47,7 @@ In the last three years or so, the need to diagnose and manage patients
 has become more urgent than ever due to the outbreak of the world's
 coronavirus disease 2019 (COVID-19). Chest X-rays (CXRs), one of the
 most primary imaging tools, are common, fast, non-invasive, relatively
-cheap and may be used to track the disease's development [@melba]. While
+cheap and may be used to track the disease's development [@cohen2020]. While
 developing drugs to hinder virus prefoliation and new methods to assist
 infected individuals, alongside making effective sanitary policies to
 prevent virus spread are crucial endeavors of medical researchers, the
@@ -81,7 +88,7 @@ discussed.
 The data we use is a clean dataset from kaggle website. These images are
 collected from various publicly available resources:
 
--   COVID-19 image data collection [@melba]
+-   COVID-19 image data collection [@cohen2020]
     <https://github.com/ieee8023/covid-chestxray-dataset>
 
 -   Labeled Optical Coherence Tomography (OCT) and Chest X-Ray Images
@@ -94,7 +101,7 @@ collected from various publicly available resources:
 The first source, is the initial publicly accessibel COVID-19 image
 dataset, which is the biggest publicly available source for COVID-19
 picture, offering a comprehensive collection of hundreds of frontal view
-X-ray images [@melba]. The second dataset source collected and labels
+X-ray images [@cohen2020]. The second dataset source collected and labels
 chest X-ray images from children, which includes 3,883 instances of
 pneumonia and 1,349 normal cases, taken from a total of 5,856 patients
 [@KERMANY2018]. The third dataset source comes from COVID-Net open
@@ -157,7 +164,7 @@ The following figure dipicts three distinct types of layers in CNNs: Convolution
 </p>
 
 ## 3.1 Convolutional Layer
-A main difference between traditional Artificial Neural Networks (ANN) and Convolutional Neural Networks (CNN) lies in the dimensional structure of their layers. In CNNs, layers possess three dimensions - height, width, and depth, where 'depth' refers to the third dimension of an activation volume [@DBLP2015]. Consider the following fully connected layers, where each neuron in one layer connects to every neuron in the adjacent layer [@nielsen2015]. However, this design in ANNs does not take into account the spatial structure of images, treating input pixels that are both far apart and close together in an identical manner, which may hamper the network's ability to efficiently process image data [@nielsen2015].
+A main difference between traditional Artificial Neural Networks (ANN) and Convolutional Neural Networks (CNN) lies in the dimensional structure of their layers. In CNNs, layers possess three dimensions - height, width, and depth, where 'depth' refers to the third dimension of an activation volume [@DBLP2015]. Consider the following fully connected layers in Fig.5, where each neuron in one layer connects to every neuron in the adjacent layer [@nielsen2015]. However, this design in ANNs does not take into account the spatial structure of images, treating input pixels that are both far apart and close together in an identical manner, which may hamper the network's ability to efficiently process image data [@nielsen2015].
 
 <p align="center">
 <img src="images/Model/full.png" width="70.0%"/> 
@@ -213,31 +220,116 @@ To address this problem, we incorporated an image data generator, which is basic
 
 Through these modifications, we were able to effectively increase our dataset size and improve our model's training capabilities.
 
-## 4.2 Model Structure
-we have constructed this sequential model using the tidy format under the package <b>keras</b> in R. As denoted above, the model comprises three main components: input layer, hidden layers (consisting of convolution layer and pooling layer), and an output layer. All the convolution layers are using the activation function of 'ReLu', which is defined as:
+## 4.2 Dataset Building
+After data augmentation, we are to establish objects as image train and test datasets. It is the specific type of format that <b>keras</b> identify as train data input. This reduces the amount of work for users to load each images from folders into the environment and the model could directly call the data from the established directory. We are creating two generators, one each for train and test data. It's important to set the input size of images beforehand to restrict the dimensions, ensuring a reasonable training time. We also set the batch size parameter to be 32, which means that we allow the model to handle 32 images in one training loop. This mini-batch technique would reduce the memory size required for training while also making training process faster as the number of parameters it needs to update (weights and bias) is significantly smaller. In addition, we established the color mode to be 'RGB', a three-color regulation as opposed to grayscale. We chose this because we identified color images in the dataset during our exploration, despite the fact that most typical medical images, especially CT scans, are black and white. By calling the generator part within the setting, we implemented the previous constructed image generator to get augmented image datasets. The last but most important feature is the class_mode. Here we identified it as 'categorical' since we are dealing with a three-level labeling: COVID-19, Normal lungs, and Pneumonia lungs.
+
+We also performed a step of computing class proportion in the fully construed dataset to make sure that we have matching proportion of images as the original data that we acquired.
+
+## 4.3 Simple model
+
+We constructed the sequential model using tidy format under <b>keras</b> in R. As denoted above, the model is a combination of three component: input layer, hidden layers (consisting of convolution layer and pooling layer), and an output layer.  All the convolution layers are using the activation function of 'ReLu', which is defined as:
 $$f(x)=max(0,z).$$
 
-The input layer is a convolution layer with 32 filters and a kernel size of $3\times3$. The input shape need to be specified and matched the configuration we set beforehand. We have input size of $64\times64\times3$ since we expect the input image to be at dimension of 64 by 64 with RGB color. If setting color as grey scale, we would instead insert 1 at this block.Following each convolution layer, we add a pooling layer to wrap up the feature information extracted by the convolution layer filtering. 
+Our training protocol begins with a simple model to test feasibility and troubleshoot potential issues. 
 
-The model then includes three convolution layers with filter numbers 64,128,and 128 respectively. This is simply the result of our exploration and training, and users are free to experiment with different layer structures and filter quantities for model training. By inserting a flatten layer, we are end with the convolution part and moved on to the typical networks to perform classification assignment.
+The simple model has one convolution layer with a filter size being 16 and and a kernel size $3\times 3$. Given that we have made the input images to be a dimension of $64\times 64$, the filter size is proportionate to this dimension. After this, we appended a max pooling layer to wrap up information gained from convolution layer by pool the maximum number of each filer shift. Then the convolution part is flattened and moved on to dense layer. Here we have two layers, receptively with 16 and 32 nodes.
 
-Start with a drop out layer of 0.5, we added two dense layer with 128 and 64 units respectively. This would convert information of image features to make classification task. 
-
-The final layer, our output layer, is a dense layer with three units,  corresponding to the three labels in our data: 'COVID-19', 'PNEUMONIA', and 'NORMAL'. We set the activation function to be 'softmax' so that the model will finally give its prediction of probabilities for each label of a given image. And the three probabilities should sum up to 1. For a multi-class label classification, softmax function is defined as:
+The final layer, our output layer, is a dense layer with three units, corresponding ro our three labels:  'COVID-19', 'PNEUMONIA', and 'NORMAL'. We set the activation function to be softmax so that the model will finally give its prediction of probabilities for each label of any given image. And the three probabilities should sum up to 1.  For a multi-class label classification, softmax function is defined as:
 $$\sigma(z_i) = \frac{e^{z_{i}}}{\sum_{j=1}^K e^{z_{j}}} \ \ \ for\ i=1,2,\dots,K$$
 
-Now that we are finally able to compile the model with our constructed train and test dataset from the last section. We specify the loss function to be 'categorical_crossentropy', and optimization algorithm to be Adam with a learning rate of 0.0001. <b>TensorFlow</b> enables a great deal of flexibility here that users can try out different optimization algorithm and learning rate. We also request the model to output accuracy for evaluation purposes.
+Now that we are finally able to compile the model with our constructed train and test dataset from the last section. We specified the loss function to be 'categorical_crossentropy', and optimization algorithm to be Adam with a learning rate of 0.0001. <b>TensorFlow</b> enables a great deal of flexibility here that user can try out different optimization algorithm and learning rate. And we also want the model to output accuracy so that we could evaluate.
 
-Finally, let's fit the mode with train data and evaluate on test data! The number of epochs is set to be 30, which means that the training process will go through the entire train data 30 times. To accelerate training time, we added the option of multiprocessing and included an early stopping criteria based on accuracy, with a patience level of 5. This ensures early termination of model training if convergence is detected.
+Let's fit the mode with train data and evaluate on test data! The number epochs is set to be 30, which means the training process will go through the entire train data 30 times. To accelerate training time, we added the option of multiprocessing and an early stopping criteria by patience being 5 in terms of accuracy check, so that the model train will stop earlier if detected convergence.
 
-# 5. Discussion
+The following Fig.8 provides a summary of our model.
 
-## 5.1 Results
+<p align="center">
+<img src="images/Model/sim.jpg"/> 
+<br>
+<font size = "2">Fig.8: Simple Model </font>
+</p>
 
-## 5.2 Conclusion
+After training, we can see that the accuracy for the simple model is stabilized around 0.8 with a loss around 0.45. Its performance is slightly better on the test data, achieving an accuracy of approximately 0.84 and a loss around 0.40. We can see the process of training in Fig.9 and the training is stopped at the 18th epoch.Having confirmed the feasibility of our model architecture, we are now prepared to proceed with model selection and pruning, taking advantage of the flexibility offered by the <b>keras</b> package.
 
-# 6. Future Work
+<p align="center">
+<img src="images/Model/simresult.jpg" width="70%"/> 
+<br>
+<font size = "2">Fig.9: Result of Simple Model</font>
+</p>
 
-To be added.
+## 4.4 Model Pruning
+
+To enhance the capability of the model, We would like to increase the complexity of the model by adding more convolution layers and pooling layers, while increasing the size of the filters to maintain a larger feature extraction area so that the model may obtain more features.
+
+The input layer is now  a convolution layer with 32 filters and a kernel size of $3 \times 3$. The input shape should be specified and matched what we set beforehand. We have input dimension of $64 \times 64 \times 3$, since we expect the input images to be of dimension $64 \times 64$ in RGB. For grayscale images, we would use 1 in this block instead. We also added an element to 'stride' so that there's one unit shifting in the input layer. As before, a pooling layer follows each convolution layer to encapsulate the extracted feature information.
+
+The model now includes three convolution layers, with 64, 128, and 128 filters respectively. This is simply the result of our exploration and training, users can have their own exploration over the layers and number of filters to train the model. By inserting a flatten layer, we are end with the convolution part and moved on to the typical networks to perform classification assignment.
+
+Beginning with a dropout layer of 0.5, we added two dense layers with units 128 and 64. This would convert information of image features to make classification task. 
+
+The final output layer is a dense layer with three units, since we have three labels, reflecting our three labels. We've retained the softmax activation function to provide probabilistic predictions for each label of a given image.
+
+Similar to the simple model, we compile the new model with exactly the same settings, except that we set the epoch size to 50. Since we are training a significantly larger amound of parameters, we would expect the training to converge later. 
+
+In the model summary page (Fig.110), we can see that there are a total of 314,947 parameters to prune with respect to the 247,123 parameters of the simple model.
+
+<p align="center">
+<img src="images/Model/mod.jpg"/> 
+<br>
+<font size = "2">Fig.10: New Model</font>
+</p>
+
+As a result of training, the model demonstrates improved accuracy. It has now achieved approximately 0.90 of accuracy and a loss 0.25. This indicates the fact that enhancing the model by adding more layers can improve its performance. However, it is also important to balance this against potential increases in running time and the risk of overfitting, ensuring the model remains efficient and generalized.
+
+<p align="center">
+<img src="images/Model/modresult.png" width="70%"/> 
+<br>
+<font size = "2">Fig.11: Result of New Model</font>
+</p>
+
+
+## 4.5 Model Evaluation
+Once the CNN model is built and trained, we would like to further test out its validity and accuracy on the previously spitted validation data set from training set. It is the set that has not been seen in the process of training and it is a great option to test if the model has overfitted on the training data.
+
+To do so, we created a validate data set using the same approach when we created train and test dataset. We then evaluate the model's performance on this dataset using the <b>'evaluate()'</b> function provided by the <b>keras</b> package.
+
+Our result shows that we achieved an accuracy of 0.9033 with a loss of 0.2606, which is approximately similar to the training process. It suggests our model generalizes well and has not overfitted the training data. This is a promising indication of the model's robustness and reliability.
+
+# 5. Conclusion
+In conlusion, our CNN model seems to exhibit robust performance in the classification of Chest X-rays. The complexity of the model, coupled with the use of data augmentation techniques, has significantly improved its ability to generalize and handle variations in the image data. Despite its strengths, there is still potential for improvement through exploration of different CNN architectures, more advanced data augmentation techniques and so on. Overall, our model serves as an effective tool in medical image analysis with promising opportunities for further enhancements.
+
+# 6. Comparision to Other Approaches
+In this section, we reviewed several existing methodologies and compared their outcomes.
+
+In the study by Cohen et al. [@cohen2020], the goal was to utilize COVID-19 image data to develop AI-based approaches for predicting infection. They employed a pre-trained DenseNet model [@huang2017densely] from the <b>TorchRayVision</b> library [@cohen2020limits], achieving an AUC of approximately 74%.
+
+Kermany et al. @KERMANY2018 address the issue of data scarcity by employing a method of leveraging data known as transfer learning. Instead of training a entirely new blank network, they utilized a feed-forward network to fix the weights in the lower levels, which are already optimized to recognize common image structures. Then they retained the weights of the upper levels with back-propagation. Their approach enables the model to identify specific features unique to a particular category of images, thus accelerating the training process. Their transfer learning algorithm obtained results that when differentiating between pneumonia and normal chest X-rays, the model achieved an accuracy of 92.8%, with a sensitivity of 93.2% and a specificity of 90.1%. 
+
+Wang et al. @Wang2020 developed COVID-Net, a deep convolutional neural network design specifically designed to detect COVID-19 cases from chest X-rays. TThey employed residual architecture design principles to make the same three predictions as our final project. The initial network design prototype was guided by data and specific human design requirements, which is used to construct the final deep neural network architecture.  Their model demonstrated good sensitivity for COVID-19 cases, with a sensitivity rate of 91.0%.
+
+# 7. Future Work
+There are various paths we may follow for future work given our experience with the current project and the knowledge we've learned about CNNs:
+
+<b>1. Padding</b>: The loss of information that may reside on the image's border is one of the cons of the convolution stage [@8308186]. Padding is a technique that can help preserve the spatial dimensions of the image after convolution. One common and simple process is <b>zero-padding</b>, which pads the border of the input and controls the output size [DBLP2015].
+
+<b>2. Different Architectures</b>: In our final project, the model employees a straightforward CNN structure. We could consider experimenting with different architectures in the future, such as Residual Networks (ResNets), Inception Networks, or Dense Convolutional Networks (DenseNets). These architecture has been verified to be effective in the classification of Chest-X ray images [@cohen2020].
+
+<b>3. Transfer Learning</b>: Transfer learning is to use pre-trained models that have been trained on large datasets. Kermany et al. @KERMANY2018  employees this architecture in their work.
+
+<b>4. Data Augmentation Techniques</b>: We could further explore data augmentation techniques to create a more robust model that can handle a variety of image conditions. For example, deep representations may be learned using generative adversarial networks (GANs) without the need for a large amount of annotated training data [@8308186]. 
+
+<b>5. Other Performance Metrics</b>: Sometimes accuracy is not the best metric, especially for imbalanced datasets. In future, we could use other metrics like precision, recall, F1 score, or Area Under the Receiver (AUC) and Operating Characteristic (ROC) curves to provide a more comprehensive evaluation.
+
+By incorporating these considerations, we can continue to refine and enhance our model, driving towards greater performance, efficiency, and robustness in a variety of medical images.
+
+# Contact
+
+If you have any questions, feel free to contact us!
+
+Yu Yan: yu_yan@brown.edu
+
+Zihan Zhou: zihan_zhou1@brown.edu
+
+You can find the full code for this final project here: https://github.com/Rosy98/PHP2650-Final-Project
 
 # Reference
