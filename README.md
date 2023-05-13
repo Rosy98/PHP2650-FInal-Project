@@ -5,8 +5,10 @@ Group members: Yu Yan, Zihan Zhou
 
 ## Reproducibility
 
-- `index.Rmd` and `index.html`: these two files are used to generate the github pages for public post
-- `Data_management`: implementation of data
+- `index.md` and `index.html`: these two files are used to generate the github pages for public post
+- `Data_management.Rmd`: implementation of data
+- `CNN Model and Code Appendix`: code for the CNN models
+- `refs.bib`: BibTex file of bibliography items
 - `\images`: folder to save images for the post
 - `\data`: folder to save all Chest X-ray images
 
