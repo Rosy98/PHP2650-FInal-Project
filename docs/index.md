@@ -1,7 +1,6 @@
 ---
 title: "PHP2650 Final Project"
 author: "Yu Yan, Zihan Zhou"
-date: "05/13/2023"
 output:
   html_document:
     df_print: paged
