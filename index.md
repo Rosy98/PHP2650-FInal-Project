@@ -225,7 +225,7 @@ After data augmentation, we are to establish objects as image train and test dat
 
 We also performed a step of computing class proportion in the fully construed dataset to make sure that we have matching proportion of images as the original data that we acquired.
 
-## 4.3 Simple model
+## 4.3 Simple Model
 
 We constructed the sequential model using tidy format under <b>keras</b> in R. As denoted above, the model is a combination of three component: input layer, hidden layers (consisting of convolution layer and pooling layer), and an output layer.  All the convolution layers are using the activation function of 'ReLu', which is defined as:
 $$f(x)=max(0,z).$$
