@@ -1,0 +1,146 @@
+---
+title: "PHP2650 Final Project"
+author: "Yu Yan, Zihan Zhou"
+date: "05/13/2023"
+---
+
+\section{Introduction}
+
+In the last three years or so, the need to diagnose and manage patients has become more urgent than ever due to the outbreak of the world's coronavirus disease 2019 (COVID-19). Chest X-rays (CXRs), one of the most primary imaging tools, are common, fast, non-invasive, relatively cheap and may be used to track the disease's development (\cite{melba:2020:002:cohen}. While developing drugs to hinder virus prefoliation and new methods to assist infected individuals, alongside making effective sanitary policies to prevent virus spread are crucial endeavors of medical researchers, the role of computer science, emphasized by its significant contributions such as innovative technologies for virus diagnostics and tracking human interactions, is equally vital in this fight against the virus \cite{MARQUES2020106691}.
+
+Nowadays, scientists are employing Convolutional Neural Networks (CNN), a class of deep learning neural networks for multiple applications. In the 1860s, Wiesel and Hubel\cite{doi:10.1152/jn.1963.26.6.1003} studied the visual cortex cells of cats and found that each visual neuron processes only a small area of the visual image, the Receptive Field. And inputting the entire pixel data to traditional Neural Network is highly inefficient and computationally demanding. This inspired the concept of convolutional neural networks (CNNs), a powerful and effective tool for image classification because of its high accuracy. CNNs aim to automatically learn relevant features from images by using an input layer, an output layer, and hidden layers. Typically, the hidden layers comprise convolutional layers, ReLU layers, pooling layers, and fully connected layers. CNNs marks a significant breakthrough in automatic image classification systems as that bypass the need for pre-processing of images that wa a requirement in conventional machine learning algorithms \cite{MARQUES2020106691}.
+
+The primary goal of our project is to develop a Convolutional Neural Network (CNN)-based system for the classification of X-ray images. We will provide a comprehensive explanation of what CNNs are and how they operate within this context. During the training and testing phase, the dataset has been divided into separate parts, which helps to validate the proposed CNN models and helps prevent overfitting, a common issue in machine learning models. The multi-class classification using images from patients with COVID-19, pneumonia, and those who are healthy, are discussed.
+
+\section{Dataset Description and Sources}
+
+\indent The data we use is a clean dataset from kaggle website. These images are collected from various publicly available resources:
+
+
+\begin{itemize}
+\item[1.] COVID-19 image data collection \cite{melba:2020:002:cohen} https://github.com/ieee8023/covid-chestxray-dataset
+\item[2.] Labeled Optical Coherence Tomography (OCT) and Chest X-Ray Images for Classification \cite{Kermany_2018b}\cite{KERMANY20181122} https://data.mendeley.com/datasets/rscbjbr9sj/2
+\item[3.] COVID-Net Open Source Initiative \cite{Wang2020} https://github.com/lindawangg/COVID-Net
+\end{itemize}
+
+The first source, is the initial publicly accessibel COVID-19 image dataset, which is the biggest publicly available source for COVID-19 picture, offering a comprehensive collection of hundreds of frontal view X-ray images \cite{melba:2020:002:cohen}. The second dataset source collected and labels chest X-ray images from children, which includes 3,883 instances of pneumonia and 1,349 normal cases, taken from a total of 5,856 patients \cite{KERMANY20181122}. The third dataset source comes from COVID-Net open source initiative, providing a collection of chest X-ray images for different categories: no pneumonia, non-COVID-19 pneumonia, and COVID-19 pneumonia, taken from over 16,400 patients.
+
+The cleaned curated dataset from Kaggle, avaliable at <https://www.kaggle.com/code/faressayah/chest-x-ray-medical-diagnosis-with-cnn-densenet/input?select=Data>, has arranged and split the above three dataset sources into two folders: 'train', 'test'. Each of these folders contains three subfolders, representing three categories: 'COVID-19', 'PNEUMONIA', and 'NORMAL'. The dataset includes a total of 6,432 X-ray images, with the test data constituting 20% of the total images. The following are a few examples from each category.
+
+\begin{figure}[ht] 
+  \begin{subfigure}[b]{0.25\linewidth}
+    \centering
+    \includegraphics[width=0.75\linewidth]{X-rays/COVID19(108).jpg} 
+    \caption{COVID19(108)} 
+    \label{fig7:a} 
+  \end{subfigure}%% 
+  \begin{subfigure}[b]{0.25\linewidth}
+    \centering
+    \includegraphics[width=0.75\linewidth]{X-rays/COVID19(463).jpg} 
+    \caption{COVID19(463)} 
+    \label{fig7:b} 
+  \end{subfigure}%%
+  \begin{subfigure}[b]{0.25\linewidth}
+    \centering
+    \includegraphics[width=0.75\linewidth]{X-rays/COVID19(501).jpg} 
+    \caption{COVID19(501)} 
+    \label{fig7:c}
+  \end{subfigure}%%
+  \begin{subfigure}[b]{0.25\linewidth}
+    \centering
+    \includegraphics[width=0.75\linewidth]{X-rays/COVID19(539).jpg} 
+    \caption{COVID19(539)} 
+    \label{fig7:d} 
+  \end{subfigure} 
+  \caption{COVID-19}
+  \label{covid} 
+\end{figure}
+
+\begin{figure}[ht] 
+  \begin{subfigure}[b]{0.25\linewidth}
+    \centering
+    \includegraphics[width=0.75\linewidth]{X-rays/PNEUMONIA(3443).jpg} 
+    \caption{PNEUMONIA(3443)} 
+    \label{fig7:a} 
+  \end{subfigure}%% 
+  \begin{subfigure}[b]{0.25\linewidth}
+    \centering
+    \includegraphics[width=0.75\linewidth]{X-rays/PNEUMONIA(3462).jpg} 
+    \caption{PNEUMONIA(3462)} 
+    \label{fig7:b} 
+  \end{subfigure}%%
+  \begin{subfigure}[b]{0.25\linewidth}
+    \centering
+    \includegraphics[width=0.75\linewidth]{X-rays/PNEUMONIA(3614).jpg} 
+    \caption{PNEUMONIA(3614)} 
+    \label{fig7:c}
+  \end{subfigure}%%
+  \begin{subfigure}[b]{0.25\linewidth}
+    \centering
+    \includegraphics[width=0.75\linewidth]{X-rays/PNEUMONIA(3627).jpg} 
+    \caption{PNEUMONIA(3627)} 
+    \label{fig7:d} 
+  \end{subfigure} 
+  \caption{PNEUMONIA}
+  \label{pneumonia} 
+\end{figure}
+
+\begin{figure}[ht] 
+  \begin{subfigure}[b]{0.25\linewidth}
+    \centering
+    \includegraphics[width=0.75\linewidth]{X-rays/NORMAL(1267).jpg} 
+    \caption{NORMAL(1267)} 
+    \label{fig7:a} 
+  \end{subfigure}%% 
+  \begin{subfigure}[b]{0.25\linewidth}
+    \centering
+    \includegraphics[width=0.75\linewidth]{X-rays/NORMAL(1274).jpg} 
+    \caption{NORMAL(1274)} 
+    \label{fig7:b} 
+  \end{subfigure}%%
+  \begin{subfigure}[b]{0.25\linewidth}
+    \centering
+    \includegraphics[width=0.75\linewidth]{X-rays/NORMAL(1379).jpg} 
+    \caption{NORMAL(1379)} 
+    \label{fig7:c}
+  \end{subfigure}%%
+  \begin{subfigure}[b]{0.25\linewidth}
+    \centering
+    \includegraphics[width=0.75\linewidth]{X-rays/NORMAL(1415).jpg} 
+    \caption{NORMAL(1415)} 
+    \label{fig7:d} 
+  \end{subfigure} 
+  \caption{NORMAL}
+  \label{normal} 
+\end{figure}
+
+\section{Models}
+
+\subsection{An introduction to  Convolutional Neural Network (CNN)}
+
+Convolutional neural network is one kind of deep nural networks. The capacity to classify images and identify objects in a picture has improved significantly with the development of convolutional neural networks \cite{DBLP:journals/corr/ZeilerF13}. Convolutional neural employs a special kind of method which is being known as convolution. Suppose we have two measurable functions on $\mathbb{R}^n$, $f$ and $g$, convolution is defined as: $$(f*g)(t)=\int_{-\infty}^\infty f(\tau)g(t-\tau)d\tau$$ Then consider a 1-dimensional convolutional layer with inputs $\{x_n\}$ and outputs $\{y_n\}$
+
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Model/architrcture.png}
+    \caption{An simple CNN architecture, comprised of just five layers \cite{DBLP:journals/corr/OSheaN15}}
+    \label{Fig:architecture}
+\end{figure} \par
+
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Model/rob3_new6-1.png}
+    \caption{ \cite{DBLP:journals/corr/OSheaN15}}
+    \label{Fig:architecture}
+\end{figure} \par
+
+\section{Discussion}
+
+To be added.
+
+\pagebreak
+
+\bibliographystyle{plain}
+\bibliography{ref}
