@@ -1,5 +1,6 @@
 # PHP2650 Final Project
 The goal of our final project is to develop a CNN model that can predict the presence of COVID-19 or other pneumonias using chest X-ray images.
+
 Grou member: Yu Yan, Zihan Zhou
 
 ## Reproducibility
@@ -11,5 +12,6 @@ Grou member: Yu Yan, Zihan Zhou
 
 ## Repository and Pages address
 Repository address: https://github.com/Rosy98/PHP2650-Final-Project
+
 Github pages address: https://rosy98.github.io/PHP2650-Final-Project/
 
