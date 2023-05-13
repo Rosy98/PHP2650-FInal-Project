@@ -92,7 +92,7 @@ collected from various publicly available resources:
     <https://github.com/ieee8023/covid-chestxray-dataset>
 
 -   Labeled Optical Coherence Tomography (OCT) and Chest X-Ray Images
-    for Classification [@Kermany2018b] [@KERMANY2018]
+    for Classification [@KERMANY2018]
     <https://data.mendeley.com/datasets/rscbjbr9sj/2>
 
 -   COVID-Net Open Source Initiative [@Wang2020]
@@ -172,7 +172,7 @@ A main difference between traditional Artificial Neural Networks (ANN) and Convo
 <font size = "2">Fig.5: Fully-connected Layers [@nielsen2015]</font>
 </p>
 
-In contrast, CNNs only focus on local region of an image. Convolution is applied to a small region of an image, referred to as <b>'receptive field' or 'local region'</b> instead of the entire image. As illustrated in Fig.7, to enhance efficiency, the hidden neurons in the next layer only get inputs from the corresponding part of the previous layer [@8308186]. This approach not only reduces computational requirements but also helps in recognizing spatial hierarchies within an image (Fig.6)[@8308186].
+In contrast, CNNs only focus on local region of an image. Convolution is applied to a small region of an image, referred to as <b>'receptive field' or 'local region'</b> instead of the entire image. As illustrated in Fig.7, to enhance efficiency, the hidden neurons in the next layer only get inputs from the corresponding part of the previous layer [@8308186]. This approach not only reduces computational requirements but also helps in recognizing spatial hierarchies within an image (Fig.6) [@8308186].
 
 <p align="center">
 <img src="images/Model/CNN.gif" width="30%"/>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -271,7 +271,7 @@ The final output layer is a dense layer with three units, since we have three la
 
 Similar to the simple model, we compile the new model with exactly the same settings, except that we set the epoch size to 50. Since we are training a significantly larger amound of parameters, we would expect the training to converge later. 
 
-In the model summary page (Fig.110), we can see that there are a total of 314,947 parameters to prune with respect to the 247,123 parameters of the simple model.
+In the model summary page (Fig.10), we can see that there are a total of 314,947 parameters to prune with respect to the 247,123 parameters of the simple model.
 
 <p align="center">
 <img src="images/Model/mod.jpg"/> 
@@ -301,20 +301,20 @@ In conlusion, our CNN model seems to exhibit robust performance in the classific
 # 6. Comparision to Other Approaches
 In this section, we reviewed several existing methodologies and compared their outcomes.
 
-In the study by Cohen et al. [@cohen2020], the goal was to utilize COVID-19 image data to develop AI-based approaches for predicting infection. They employed a pre-trained DenseNet model [@huang2017densely] from the <b>TorchRayVision</b> library [@cohen2020limits], achieving an AUC of approximately 74%.
+In the study of @cohen2020, the goal was to utilize COVID-19 image data to develop AI-based approaches for predicting infection. They employed a pre-trained DenseNet model [@huang2017densely] from the <b>TorchRayVision</b> library [@cohen2020limits], achieving an AUC of approximately 74%.
 
-Kermany et al. @KERMANY2018 address the issue of data scarcity by employing a method of leveraging data known as transfer learning. Instead of training a entirely new blank network, they utilized a feed-forward network to fix the weights in the lower levels, which are already optimized to recognize common image structures. Then they retained the weights of the upper levels with back-propagation. Their approach enables the model to identify specific features unique to a particular category of images, thus accelerating the training process. Their transfer learning algorithm obtained results that when differentiating between pneumonia and normal chest X-rays, the model achieved an accuracy of 92.8%, with a sensitivity of 93.2% and a specificity of 90.1%. 
+@KERMANY2018 address the issue of data scarcity by employing a method of leveraging data known as transfer learning. Instead of training a entirely new blank network, they utilized a feed-forward network to fix the weights in the lower levels, which are already optimized to recognize common image structures. Then they retained the weights of the upper levels with back-propagation. Their approach enables the model to identify specific features unique to a particular category of images, thus accelerating the training process. Their transfer learning algorithm obtained results that when differentiating between pneumonia and normal chest X-rays, the model achieved an accuracy of 92.8%, with a sensitivity of 93.2% and a specificity of 90.1%. 
 
-Wang et al. @Wang2020 developed COVID-Net, a deep convolutional neural network design specifically designed to detect COVID-19 cases from chest X-rays. TThey employed residual architecture design principles to make the same three predictions as our final project. The initial network design prototype was guided by data and specific human design requirements, which is used to construct the final deep neural network architecture.  Their model demonstrated good sensitivity for COVID-19 cases, with a sensitivity rate of 91.0%.
+@Wang2020 developed COVID-Net, a deep convolutional neural network design specifically designed to detect COVID-19 cases from chest X-rays. TThey employed residual architecture design principles to make the same three predictions as our final project. The initial network design prototype was guided by data and specific human design requirements, which is used to construct the final deep neural network architecture.  Their model demonstrated good sensitivity for COVID-19 cases, with a sensitivity rate of 91.0%.
 
 # 7. Future Work
 There are various paths we may follow for future work given our experience with the current project and the knowledge we've learned about CNNs:
 
-<b>1. Padding</b>: The loss of information that may reside on the image's border is one of the cons of the convolution stage [@8308186]. Padding is a technique that can help preserve the spatial dimensions of the image after convolution. One common and simple process is <b>zero-padding</b>, which pads the border of the input and controls the output size [DBLP2015].
+<b>1. Padding</b>: The loss of information that may reside on the image's border is one of the cons of the convolution stage [@8308186]. Padding is a technique that can help preserve the spatial dimensions of the image after convolution. One common and simple process is <b>zero-padding</b>, which pads the border of the input and controls the output size [@DBLP2015].
 
 <b>2. Different Architectures</b>: In our final project, the model employees a straightforward CNN structure. We could consider experimenting with different architectures in the future, such as Residual Networks (ResNets), Inception Networks, or Dense Convolutional Networks (DenseNets). These architecture has been verified to be effective in the classification of Chest-X ray images [@cohen2020].
 
-<b>3. Transfer Learning</b>: Transfer learning is to use pre-trained models that have been trained on large datasets. Kermany et al. @KERMANY2018  employees this architecture in their work.
+<b>3. Transfer Learning</b>: Transfer learning is to use pre-trained models that have been trained on large datasets. @KERMANY2018  employee this architecture in their work.
 
 <b>4. Data Augmentation Techniques</b>: We could further explore data augmentation techniques to create a more robust model that can handle a variety of image conditions. For example, deep representations may be learned using generative adversarial networks (GANs) without the need for a large amount of annotated training data [@8308186]. 
 
