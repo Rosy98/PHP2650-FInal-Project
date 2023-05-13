@@ -1,7 +1,6 @@
 ---
 title: "PHP2650 Final Project"
 author: "Yu Yan, Zihan Zhou"
-date: "05/13/2023"
 output:
   html_document: 
     theme: cerulean
@@ -26,12 +25,7 @@ h4.author { /* Header 4 - and the author and data headers use this too  */
   color: Grey;
   text-align: center;
 }
-h4.date { /* Header 4 - and the author and data headers use this too  */
-  font-size: 20px;
-  font-family: "Times New Roman", Times, serif;
-  color: Grey;
-  text-align: center;
-}
+
 figure{text-align: center; max-width: 40%; margin:0;padding: 10px;}
 figure img{width: 100%;}
 body{
