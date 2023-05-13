@@ -1,9 +1,10 @@
 ---
 title: "PHP2650 Final Project"
 author: "Yu Yan, Zihan Zhou"
+date: "05/13/2023"
 output:
-  html_document:
-    df_print: paged
+  html_document: 
+    theme: cerulean
 link-citations: yes
 editor_options:
   markdown:
@@ -15,24 +16,28 @@ bibliography: refs.bib
 <style type="text/css">
 
 h1.title {
-  font-size: 38px;
+  font-size: 45px;
   color: Black;
   text-align: center;
 }
 h4.author { /* Header 4 - and the author and data headers use this too  */
-    font-size: 18px;
+    font-size: 20px;
   font-family: "Times New Roman", Times, serif;
   color: Grey;
   text-align: center;
 }
 h4.date { /* Header 4 - and the author and data headers use this too  */
-  font-size: 18px;
+  font-size: 20px;
   font-family: "Times New Roman", Times, serif;
   color: Grey;
   text-align: center;
 }
 figure{text-align: center; max-width: 40%; margin:0;padding: 10px;}
 figure img{width: 100%;}
+body{
+  font-family: Helvetica;
+  font-size: 15pt;
+}
 </style>
 ```
 # 1. Introduction
@@ -116,21 +121,24 @@ from each category.
 <img src="images/X-rays/COVID19(108).jpg" width="20%"/>
 <img src="images/X-rays/COVID19(463).jpg" width="20%"/>
 <img src="images/X-rays/COVID19(501).jpg" width="20%"/>
-<img src="images/X-rays/COVID19(539).jpg" width="20%"/> <br><br> Fig.1.COVID-19
+<img src="images/X-rays/COVID19(539).jpg" width="20%"/> <br>
+<font size = "2">Fig.1: COVID-19</font>
 </p>
 
 <p align="center">
 <img src="images/X-rays/PNEUMONIA(3443).jpg" width="20%"/>
 <img src="images/X-rays/PNEUMONIA(3462).jpg" width="20%"/>
 <img src="images/X-rays/PNEUMONIA(3614).jpg" width="20%"/>
-<img src="images/X-rays/PNEUMONIA(3627).jpg" width="20%"/> <br><br> Fig.2.PNEUMONIA
+<img src="images/X-rays/PNEUMONIA(3627).jpg" width="20%"/> <br> 
+<font size = "2">Fig.2: PNEUMONIA</font>
 </p>
 
 <p align="center">
 <img src="images/X-rays/NORMAL(1267).jpg" width="20%"/>
 <img src="images/X-rays/NORMAL(1274).jpg" width="20%"/>
 <img src="images/X-rays/NORMAL(1379).jpg" width="20%"/>
-<img src="images/X-rays/NORMAL(1415).jpg" width="20%"/> <br><br> Fig.3.NORMAL
+<img src="images/X-rays/NORMAL(1415).jpg" width="20%"/> <br>
+<font size = "2">Fig.3: NORMAL</font>
 </p>
 
 
@@ -146,64 +154,87 @@ defined as:
 
 $$(f*g)(t)=\int_{-\infty}^\infty f(\tau)g(t-\tau)d\tau$$
 
+The following figure dipicts three distinct types of layers in CNNs: Convolutional, Pooling, and Fully-connected layers. Stacking these layers together forms a complete CNN architecture. As an example, Fig.4 depicts a simplified CNN architecture designed for MNIST digit classification[@DBLP2015].
+
+<p align="center">
+<img src="images/Model/architrcture.png" width="70.0%"/> 
+<br>
+<font size = "2">Fig.4: An simple CNN architecture, comprised of just five layers [@DBLP2015]</font>
+</p>
+
+## 3.1 Convolutional Layer
 A main difference between traditional Artificial Neural Networks (ANN) and Convolutional Neural Networks (CNN) lies in the dimensional structure of their layers. In CNNs, layers possess three dimensions - height, width, and depth, where 'depth' refers to the third dimension of an activation volume [@DBLP2015]. Consider the following fully connected layers, where each neuron in one layer connects to every neuron in the adjacent layer [@nielsen2015]. However, this design in ANNs does not take into account the spatial structure of images, treating input pixels that are both far apart and close together in an identical manner, which may hamper the network's ability to efficiently process image data [@nielsen2015].
 
 <p align="center">
-<img src="images/Model/full.png" width="50.0%"/> 
+<img src="images/Model/full.png" width="70.0%"/> 
 <br>
-<br>
-Fig.4.Fully-connected Layers [@nielsen2015]
+<font size = "2">Fig.5: Fully-connected Layers [@nielsen2015]</font>
 </p>
 
-In contrast, CNNs utilize convolution, as previously mentioned, to focus on local region of an image. Convolution is applied to a small region of an image, referred to as 'receptive field' or 'local region' instead of the entire image. As illustrated in Fig.6, to enhance efficiency, the hidden neurons in the next layer only get inputs from the corresponding part of the previous layer [@8308186]. This approach not only reduces computational requirements but also helps in recognizing spatial hierarchies within an image (Fig.5)[@8308186].
+In contrast, CNNs only focus on local region of an image. Convolution is applied to a small region of an image, referred to as <b>'receptive field' or 'local region'</b> instead of the entire image. As illustrated in Fig.7, to enhance efficiency, the hidden neurons in the next layer only get inputs from the corresponding part of the previous layer [@8308186]. This approach not only reduces computational requirements but also helps in recognizing spatial hierarchies within an image (Fig.6)[@8308186].
 
 <p align="center">
-<img src="images/Model/CNN.gif" width="30%"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src="images/Model/CNN.gif" width="30%"/>&nbsp;&nbsp;&nbsp;&nbsp;
 <img src="images/Model/convolution.gif" width="30%"/>
 <br> 
-<br>
-Fig.5. Three dimensional input representation of CNN &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fig.6.Convolution as alternative for fully connected network
+<font size = "2">Fig.6: Three dimensional input representation of CNN</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font size = "2">Fig.7: Convolution as alternative for fully connected network</font>
 </p>
 
-There are three distinct types of layers in CNNs: Convolutional, Pooling, and Fully-connected layers. Stacking these layers together forms a complete CNN architecture. As an example, Fig.7 depicts a simplified CNN architecture designed for MNIST digit classification[@DBLP2015].
+Despite having significantly fewer connections than fully connected layers, convolutional layers also offer advantages due to another simplifying assumption, known as the <b>'stride'</b> [@8308186]. Fig.8 shows that the local receptive field being moved by one pixel each time. Setting a larger number of the stride will reduce overlapping and obtain an output of lower spatial dimensions.
 
 <p align="center">
-<img src="images/Model/architrcture.png" width="50.0%"/> 
+<img src="images/Model/stride.png"/> 
 <br>
-<br>
-Fig.7.An simple CNN architecture, comprised of just five layers [@DBLP2015]
+<font size = "2">Fig.8: Stride 1 [@8308186]</font>
 </p>
 
-Then we are 
+In addition, we can optimize our model by assuming the local connection weights are fixed for all neurons of the next layer [@8308186]. In other words, the network have <b>shared weights and biases</b>. According to @nielsen2015, suppose there is a $5\times 5$ region, corresponding to 28 input pixels, then there will be $24\times24$ hidden neurons. For the j,kth hidden neuron, the output is 
+$$\sigma((b+\sum_{i=0}^4\sum_{m=0}^4w_{l,m}a_{j+l,k+m})),$$
+
+where $\sigma$ is the active function, b is the shared bias, $w_{l,m}$ is the shared wights and $a_{x,y}$ is the input activation at position x, y. This equation is essentially a form of the convolution we described above. The shared weights and bias are also known as <b>kernel or filter</b>. This approach can greatly reduce the number of parameters.
+
+## 3.2 Pooling Layer
+Pooling layers aims to simplify the output from the convolutional layer, thus further reduce the number of parameters and the computational complexity [@DBLP2015]. It can be considered as lowering the resolytion in the context of image processing [@8308186]. <b>Max-pooling</b> is one of the most popular way of pooling methods, identifies the presence of a specific feature within a defined image region [@nielsen2015]. Other notable pooling strategies include <b>overlapping pooling</b>, <b>L2 pooling</b> and <b>general pooling</b>, each offering unique advantages in different cotexts.
+
+## 3.3 Fully-connected Layer
+The fully-connected layer consists of neurons that are directly linked to neurons in the immediate preceding and succeeding layers, This structure echoes the neuron arrangement found in conventional Artificial Neural Networks (ANNs), as depicted in Fig.5.
 
 
 # 4. Applictaions
 
 ## 4.1 Data Augmentation
-Before we feed the train data into some model to train, we identified that we are lacking sufficient amount of image data.
+Before deploying our model on the training dataset, we recognized a deficiency in our quantity of image data.
 
-To account for the insufficiency of data images, we included the structure of image data generator. It is basically a form of data augmentation Technic in the context of image data. We created artificial data that is consisted of transformations of original image without acquiring new images. This would increase the size of train data set to make the model training process more robust. In the <b>keras</b> package, the function <b>image_data_genertor()</b> completes such task. We could specify the transformations that we would like to achieve. For example, we can flip the images horizontally and vertically, changing contrast and hue of the images, zooming, shearing and also changing brightness of the images. Here we are implementing the following changes:
+To address this problem, we incorporated an image data generator, which is basically a form of data augmentation techniques specifically tailored to image data. This would effectively increase the size of train data set to booster the robustness of the model training process. In the <b>keras</b> package, the function <b>image_data_genertor()</b> completes such task. This function allows us to define specific transformations for our images. We can, for instance, flip the images both horizontally and vertically, alter the contrast and hue, zoom in or out, shear the image, and adjust the brightness. For our data, we implemented the following transformations:
 
-- rescale by a factor of 1/255
-- shift width and height by a factor of 0.2
-- shear and zoom the image by a factor of 0.2
-- make both horizontal and vertical flip 
-- make whitening and set brightness range to be 0.2
+- Rescaling by a factor of 1/255
+
+- Shifting the width and height by a factor of 0.2
+
+- Shearing and zooming by a factor of 0.2
+
+- Applying both horizontal and vertical flips
+
+- Whitening the image and adjusting the brightness range to 0.2.
+
+Through these modifications, we were able to effectively increase our dataset size and improve our model's training capabilities.
 
 ## 4.2 Model Structure
-we have build this sequential model using tidy format under <b>keras</b> in R. As denoted above, the model is a combination of three component: input layer, hidden layers (consisted of convolution layer and pooling layer), and an output layer. All the convolution layers are using the activation function of 'relu'.
+we have constructed this sequential model using the tidy format under the package <b>keras</b> in R. As denoted above, the model comprises three main components: input layer, hidden layers (consisting of convolution layer and pooling layer), and an output layer. All the convolution layers are using the activation function of 'ReLu', which is defined as:
+$$f(x)=max(0,z).$$
 
-The input layer is a convolution layer with 32 filters and a 3,3 kernel size. The input_shape should be specified and matched what we set beforehand. We have 64,64,3 since we expect the input image to be at dimension of 64 by 64 and 3 means we are expecting RGB option. If we have grey scale set, we would instead insert 1 at this block. Remember to append a pooling layer after each convolution layer to wrap up the feature information extracted by the convolution layer filtering. 
+The input layer is a convolution layer with 32 filters and a kernel size of $3\times3$. The input shape need to be specified and matched the configuration we set beforehand. We have input size of $64\times64\times3$ since we expect the input image to be at dimension of 64 by 64 with RGB color. If setting color as grey scale, we would instead insert 1 at this block.Following each convolution layer, we add a pooling layer to wrap up the feature information extracted by the convolution layer filtering. 
 
-Then we have three convolution layers with filter numbers respectively 64,128,and 128. This is simply the result of our exploration and training, users can have their own exploration over the layers and number of filters to train the model. By inserting a flatten layer, we are end with the convolution part and moved on to the typical networks to perform classification assignment.
+The model then includes three convolution layers with filter numbers 64,128,and 128 respectively. This is simply the result of our exploration and training, and users are free to experiment with different layer structures and filter quantities for model training. By inserting a flatten layer, we are end with the convolution part and moved on to the typical networks to perform classification assignment.
 
-Start with a drop out layer of 0.5, we added two dense layer with units 128 and 64. This would convert information of image features to make classification task. 
+Start with a drop out layer of 0.5, we added two dense layer with 128 and 64 units respectively. This would convert information of image features to make classification task. 
 
-The final layer, output layer is a dense layer with three units, since we have three labels. We set the activation function to be softmax so that the model will finally give its prediction of probabilities for each label of any given image. And the three probabilities should sum up to 1.
+The final layer, our output layer, is a dense layer with three units,  corresponding to the three labels in our data: 'COVID-19', 'PNEUMONIA', and 'NORMAL'. We set the activation function to be 'softmax' so that the model will finally give its prediction of probabilities for each label of a given image. And the three probabilities should sum up to 1. For a multi-class label classification, softmax function is defined as:
+$$\sigma(z_i) = \frac{e^{z_{i}}}{\sum_{j=1}^K e^{z_{j}}} \ \ \ for\ i=1,2,\dots,K$$
 
-Now that we are finally able to compile the model with our constructed train and test dataset from the last section. We want the loss function to be 'categorical_crossentropy', and optimization algorithm to be Adam with a learning rate of 0.0001. <b>TensorFlow</b> enables a great deal of flexibilities here that user can try out different optimization algorithm and learning rate. And we also want the model to output accuracy so that we could evaluate.
+Now that we are finally able to compile the model with our constructed train and test dataset from the last section. We specify the loss function to be 'categorical_crossentropy', and optimization algorithm to be Adam with a learning rate of 0.0001. <b>TensorFlow</b> enables a great deal of flexibility here that users can try out different optimization algorithm and learning rate. We also request the model to output accuracy for evaluation purposes.
 
-Let's fit the mode with train data and evaluate on test data! The epochs are set to be 30 which means the training process will go through the entire train data 30 times. To accelerate training time, we added the option of multiprocessing and an early stopping criteria by patience being 5 in terms of accuracy check, so that the model train will stop earlier if detected convergence.
+Finally, let's fit the mode with train data and evaluate on test data! The number of epochs is set to be 30, which means that the training process will go through the entire train data 30 times. To accelerate training time, we added the option of multiprocessing and included an early stopping criteria based on accuracy, with a patience level of 5. This ensures early termination of model training if convergence is detected.
 
 # 5. Discussion
 
