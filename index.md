@@ -189,17 +189,27 @@ Despite having significantly fewer connections than fully connected layers, conv
 <font size = "2">Fig.8: Stride 1 [@8308186]</font>
 </p>
 
-In addition, we can optimize our model by assuming the local connection weights are fixed for all neurons of the next layer [@8308186]. In other words, the network have <b>shared weights and biases</b>. According to @nielsen2015, suppose there is a $5\times 5$ region, corresponding to 28 input pixels, then there will be $24\times24$ hidden neurons. For the j,kth hidden neuron, the output is 
+In addition, we can optimize our model by assuming the local connection weights are fixed for all neurons of the next layer [@8308186]. In other words, the network have <b>shared weights and biases</b>. According to @nielsen2015, suppose there is a $5\times 5$ region, corresponding to 28 input pixels, then there will be $24\times24$ hidden neurons. For the $j,k$th hidden neuron, the output is 
 $$\sigma((b+\sum_{i=0}^4\sum_{m=0}^4w_{l,m}a_{j+l,k+m})),$$
 
-where $\sigma$ is the active function, b is the shared bias, $w_{l,m}$ is the shared wights and $a_{x,y}$ is the input activation at position x, y. This equation is essentially a form of the convolution we described above. The shared weights and bias are also known as <b>kernel or filter</b>. This approach can greatly reduce the number of parameters.
+where $\sigma$ is the active function, b is the shared bias, $w_{l,m}$ is the shared wights and $a_{x,y}$ is the input activation at position x, y. This equation is essentially a form of the convolution we described above. The shared weights and bias are also known as <b>kernel or filter</b>. It means that We compute characteristics for individual pixels by considering the values of their adjacent pixels as we move the Kernel across the input image. This approach can greatly reduce the number of parameters.
+
+The convolution process aims to extract features from the image. When building the CNN, we can add more than one convolution layer. The initial Convolution Layer typically captures gradients, while the subsequent layer is tasked with detecting edges.
 
 ## 3.2 Pooling Layer
-Pooling layers aims to simplify the output from the convolutional layer, thus further reduce the number of parameters and the computational complexity [@DBLP2015]. It can be considered as lowering the resolytion in the context of image processing [@8308186]. <b>Max-pooling</b> is one of the most popular way of pooling methods, identifies the presence of a specific feature within a defined image region [@nielsen2015]. Other notable pooling strategies include <b>overlapping pooling</b>, <b>L2 pooling</b> and <b>general pooling</b>, each offering unique advantages in different cotexts.
+Pooling layers aims to simplify the output from the convolutional layer, thus further reduce the number of parameters and the computational complexity [@DBLP2015]. It can be considered as lowering the resolution in the context of image processing [@8308186]. <b>Max-pooling</b> is one of the most popular way of pooling methods, identifies the presence of a specific feature within a defined image region [@nielsen2015]. Other notable pooling strategies include <b>average pooling</b>, <b>L2 pooling</b> and <b>general pooling</b>, each offering unique advantages in different contexts. Fig. 9 shows a example of how different pooling methods work.
+
+<p align="center">
+<img src="images/Model/pooling.webp" width = "60%"/> 
+<br>
+<font size = "2">Fig.9: Max-Pooling and Average Pooling [@Yani2019]</font>
+</p>
+
 
 ## 3.3 Fully-connected Layer
-The fully-connected layer consists of neurons that are directly linked to neurons in the immediate preceding and succeeding layers, This structure echoes the neuron arrangement found in conventional Artificial Neural Networks (ANNs), as depicted in Fig.5.
+The fully-connected layer consists of neurons that are directly linked to neurons in the immediate preceding and succeeding layers, This structure echoes the neuron arrangement found in conventional Artificial Neural Networks (ANNs), as depicted in Fig.5. According to @Yamashita2018, the feature maps derived from the final convolution or pooling layer are <b>flattened</b>, which is converted into a one-dimensional array or vector and connected to one or more fully connected layers. In these layers, every input is connected to every output through a weight that can be learned. After the convolution layers extract features and the pooling layers downsample them, these features are linked via a set of fully connected layers to the network's final outputs. In the context of classification, the outputs can be the probabilities for each class.
 
+The activation function used in the final layer often differs from those used in other layers. The choosen activation function should align with the task. Softmax function is usually applied to the multiclass classification task. This function normalizes the real values output from the last fully connected layer into probabilities corresponding to target classes. Each of these probability values falls between 0 and 1, and collectively, they add up to 1 [@Yamashita2018]. We will use it in our final project.
 
 # 4. Applictaions
 
@@ -221,7 +231,7 @@ To address this problem, we incorporated an image data generator, which is basic
 Through these modifications, we were able to effectively increase our dataset size and improve our model's training capabilities.
 
 ## 4.2 Dataset Building
-After data augmentation, we are to establish objects as image train and test datasets. It is the specific type of format that <b>keras</b> identify as train data input. This reduces the amount of work for users to load each images from folders into the environment and the model could directly call the data from the established directory. We are creating two generators, one each for train and test data. It's important to set the input size of images beforehand to restrict the dimensions, ensuring a reasonable training time. We also set the batch size parameter to be 32, which means that we allow the model to handle 32 images in one training loop. This mini-batch technique would reduce the memory size required for training while also making training process faster as the number of parameters it needs to update (weights and bias) is significantly smaller. In addition, we established the color mode to be 'RGB', a three-color regulation as opposed to grayscale. We chose this because we identified color images in the dataset during our exploration, despite the fact that most typical medical images, especially CT scans, are black and white. By calling the generator part within the setting, we implemented the previous constructed image generator to get augmented image datasets. The last but most important feature is the class_mode. Here we identified it as 'categorical' since we are dealing with a three-level labeling: COVID-19, Normal lungs, and Pneumonia lungs.
+After data augmentation, we are to establish objects as image train and test datasets. It is the specific type of format that <b>keras</b> identify as train data input. This reduces the amount of work for users to load each images from folders into the environment and the model could directly call the data from the established directory. We are creating two generators, one each for train and test data. It's important to set the input size of images beforehand to restrict the dimensions, ensuring a reasonable training time. We also set the batch size parameter to be 32, which means that we allow the model to handle 32 images in one training loop. This mini-batch technique would reduce the memory size required for training while also making training process faster as the number of parameters it needs to update (weights and bias) is significantly smaller. In addition, we established the color mode to be 'RGB', a three-color regulation as opposed to grayscale, where the combination of Red-Green-Blue can produce all possible colors. We chose this because we identified color images in the dataset during our exploration, despite the fact that most typical medical images, especially CT scans, are black and white. By calling the generator part within the setting, we implemented the previous constructed image generator to get augmented image datasets. The last but most important feature is the class_mode. Here we identified it as 'categorical' since we are dealing with a three-level labeling: COVID-19, Normal lungs, and Pneumonia lungs.
 
 We also performed a step of computing class proportion in the fully construed dataset to make sure that we have matching proportion of images as the original data that we acquired.
 
@@ -241,20 +251,20 @@ Now that we are finally able to compile the model with our constructed train and
 
 Let's fit the mode with train data and evaluate on test data! The number epochs is set to be 30, which means the training process will go through the entire train data 30 times. To accelerate training time, we added the option of multiprocessing and an early stopping criteria by patience being 5 in terms of accuracy check, so that the model train will stop earlier if detected convergence.
 
-The following Fig.8 provides a summary of our model.
+The following Fig.10 provides a summary of our model.
 
 <p align="center">
 <img src="images/Model/sim.jpg"/> 
 <br>
-<font size = "2">Fig.8: Simple Model </font>
+<font size = "2">Fig.10: Simple Model </font>
 </p>
 
-After training, we can see that the accuracy for the simple model is stabilized around 0.8 with a loss around 0.45. Its performance is slightly better on the test data, achieving an accuracy of approximately 0.84 and a loss around 0.40. We can see the process of training in Fig.9 and the training is stopped at the 18th epoch.Having confirmed the feasibility of our model architecture, we are now prepared to proceed with model selection and pruning, taking advantage of the flexibility offered by the <b>keras</b> package.
+After training, we can see that the accuracy for the simple model is stabilized around 0.8 with a loss around 0.45. Its performance is slightly better on the test data, achieving an accuracy of approximately 0.84 and a loss around 0.40. We can see the process of training in Fig.11 and the training is stopped at the 18th epoch.Having confirmed the feasibility of our model architecture, we are now prepared to proceed with model selection and pruning, taking advantage of the flexibility offered by the <b>keras</b> package.
 
 <p align="center">
 <img src="images/Model/simresult.jpg" width="70%"/> 
 <br>
-<font size = "2">Fig.9: Result of Simple Model</font>
+<font size = "2">Fig.11: Result of Simple Model</font>
 </p>
 
 ## 4.4 Model Pruning
@@ -271,12 +281,12 @@ The final output layer is a dense layer with three units, since we have three la
 
 Similar to the simple model, we compile the new model with exactly the same settings, except that we set the epoch size to 50. Since we are training a significantly larger amound of parameters, we would expect the training to converge later. 
 
-In the model summary page (Fig.10), we can see that there are a total of 314,947 parameters to prune with respect to the 247,123 parameters of the simple model.
+In the model summary page (Fig.12), we can see that there are a total of 314,947 parameters to prune with respect to the 247,123 parameters of the simple model.
 
 <p align="center">
 <img src="images/Model/mod.jpg"/> 
 <br>
-<font size = "2">Fig.10: New Model</font>
+<font size = "2">Fig.12: New Model</font>
 </p>
 
 As a result of training, the model demonstrates improved accuracy. It has now achieved approximately 0.90 of accuracy and a loss 0.25. This indicates the fact that enhancing the model by adding more layers can improve its performance. However, it is also important to balance this against potential increases in running time and the risk of overfitting, ensuring the model remains efficient and generalized.
@@ -284,7 +294,7 @@ As a result of training, the model demonstrates improved accuracy. It has now ac
 <p align="center">
 <img src="images/Model/modresult.png" width="70%"/> 
 <br>
-<font size = "2">Fig.11: Result of New Model</font>
+<font size = "2">Fig.13: Result of New Model</font>
 </p>
 
 
@@ -305,7 +315,7 @@ In the study of @cohen2020, the goal was to utilize COVID-19 image data to devel
 
 @KERMANY2018 address the issue of data scarcity by employing a method of leveraging data known as transfer learning. Instead of training a entirely new blank network, they utilized a feed-forward network to fix the weights in the lower levels, which are already optimized to recognize common image structures. Then they retained the weights of the upper levels with back-propagation. Their approach enables the model to identify specific features unique to a particular category of images, thus accelerating the training process. Their transfer learning algorithm obtained results that when differentiating between pneumonia and normal chest X-rays, the model achieved an accuracy of 92.8%, with a sensitivity of 93.2% and a specificity of 90.1%. 
 
-@Wang2020 developed COVID-Net, a deep convolutional neural network design specifically designed to detect COVID-19 cases from chest X-rays. TThey employed residual architecture design principles to make the same three predictions as our final project. The initial network design prototype was guided by data and specific human design requirements, which is used to construct the final deep neural network architecture.  Their model demonstrated good sensitivity for COVID-19 cases, with a sensitivity rate of 91.0%.
+@Wang2020 developed COVID-Net, a deep convolutional neural network design specifically designed to detect COVID-19 cases from chest X-rays. They employed residual architecture design principles to make the same three predictions as our final project. The initial network design prototype was guided by data and specific human design requirements, which is used to construct the final deep neural network architecture.  Their model demonstrated good sensitivity for COVID-19 cases, with a sensitivity rate of 91.0%.
 
 # 7. Future Work
 There are various paths we may follow for future work given our experience with the current project and the knowledge we've learned about CNNs:
